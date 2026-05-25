@@ -23,7 +23,7 @@ dist/
 .idea/
 
 # Data and model files
-models/
+
 data/
 
 # Logs
