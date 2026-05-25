@@ -1,0 +1,6 @@
+Flask>=2.2
+gunicorn>=20.1
+nltk>=3.9
+numpy>=1.24
+pandas>=2.0
+scikit-learn>=1.3

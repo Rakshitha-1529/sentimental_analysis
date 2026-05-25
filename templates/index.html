@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sentiment Analysis</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <div class="page-wrapper">
+        <header class="hero">
+            <div class="hero-content">
+                <span class="eyebrow">Sentiment Detector</span>
+                <h1>Movie Review Sentiment</h1>
+            </div>
+        </header>
+
+        <main class="container">
+            <section class="card input-card">
+                <label for="review">Enter your review</label>
+                <textarea id="review" placeholder="Type or paste a movie review here..."></textarea>
+
+                <div class="actions-row">
+                    <button class="primary-btn" id="predictBtn" onclick="predictSentiment()">Predict Sentiment</button>
+                    <button class="secondary-btn" type="button" onclick="clearReview()">Clear</button>
+                </div>
+            </section>
+
+            <section class="card result-card" id="resultCard">
+                <div class="result-header">
+                    <span>Prediction Result</span>
+                </div>
+                <div id="result" class="result-output">
+                    Enter a review and click predict to see the sentiment.
+                </div>
+                <div class="meter">
+                    <span id="meterLabel">Awaiting input</span>
+                    <div class="meter-track">
+                        <div id="sentimentMeter" class="meter-fill"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>
