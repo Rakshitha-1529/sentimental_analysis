@@ -75,3 +75,11 @@ http://127.0.0.1:5000
 ### Review Input
 
 ![Review Input](screenshots/review.png)
+
+# Sentiment Analysis Web App
+
+## Live Demo
+https://web-production-a88d2.up.railway.app
+
+## GitHub Repository
+https://github.com/Rakshitha-1529/sentimental_analysis
