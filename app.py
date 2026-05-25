@@ -10,8 +10,8 @@ nltk.download('stopwords')
 app = Flask(__name__)
 
 # Load model
-model = pickle.load(open('model.pkl', 'rb'))
-vectorizer = pickle.load(open('vectorizer.pkl', 'rb'))
+model = pickle.load(open('models/model.pkl', 'rb'))
+vectorizer = pickle.load(open('models/vectorizer.pkl', 'rb'))
 
 # Preprocessing
 stop_words = set(stopwords.words('english'))
