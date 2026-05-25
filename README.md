@@ -57,3 +57,21 @@ http://127.0.0.1:5000
 - Add model retraining support inside the app
 - Add more sentiment classes or confidence scores
 - Deploy to a cloud host like Heroku, Render, or Railway
+
+## 📸 Project Screenshots
+
+### Home Page
+
+![Home Page](screenshots/overview.png)
+
+### Positive Prediction
+
+![Positive Prediction](screenshots/positive.png)
+
+### Negative Prediction
+
+![Negative Prediction](screenshots/negative.png)
+
+### Review Input
+
+![Review Input](screenshots/review.png)
