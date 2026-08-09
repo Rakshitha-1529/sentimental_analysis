@@ -1,69 +1,129 @@
 from flask import Flask, render_template, request, jsonify
 import pickle
 import re
+import os
 import nltk
 
 from nltk.corpus import stopwords
+from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 
-nltk.download('stopwords')
 
+# Create Flask application
 app = Flask(__name__)
 
-# Load model
-model = pickle.load(open('models/model.pkl', 'rb'))
-vectorizer = pickle.load(open('models/vectorizer.pkl', 'rb'))
 
-# Preprocessing
-stop_words = set(stopwords.words('english'))
+# ---------------------------------------------------
+# Load Model and Vectorizer
+# ---------------------------------------------------
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+model_path = os.path.join(BASE_DIR, "models", "model.pkl")
+vectorizer_path = os.path.join(BASE_DIR, "models", "vectorizer.pkl")
+
+with open(model_path, "rb") as file:
+    model = pickle.load(file)
+
+with open(vectorizer_path, "rb") as file:
+    vectorizer = pickle.load(file)
+
+
+# ---------------------------------------------------
+# Load Stop Words
+# ---------------------------------------------------
+
+try:
+    # Try to use NLTK stopwords
+    stop_words = set(stopwords.words("english"))
+
+except LookupError:
+    # If NLTK stopwords are not available,
+    # use sklearn's built-in English stopwords.
+    stop_words = set(ENGLISH_STOP_WORDS)
+
+
+# ---------------------------------------------------
+# Text Preprocessing
+# ---------------------------------------------------
 
 def preprocess(text):
 
+    # Convert text to lowercase
     text = text.lower()
 
-    text = re.sub(r'<.*?>', '', text)
+    # Remove HTML tags
+    text = re.sub(r"<.*?>", "", text)
 
-    text = re.sub(r'[^a-zA-Z]', ' ', text)
+    # Keep only alphabets
+    text = re.sub(r"[^a-zA-Z]", " ", text)
 
+    # Split into words
     words = text.split()
 
-    words = [word for word in words if word not in stop_words]
+    # Remove stopwords
+    words = [
+        word for word in words
+        if word not in stop_words
+    ]
 
+    # Join words back into a sentence
     return " ".join(words)
 
-# Home route
-@app.route('/')
 
+# ---------------------------------------------------
+# Home Route
+# ---------------------------------------------------
+
+@app.route("/")
 def home():
+    return render_template("index.html")
 
-    return render_template('index.html')
 
-# Prediction route
-@app.route('/predict', methods=['POST'])
+# ---------------------------------------------------
+# Prediction Route
+# ---------------------------------------------------
 
+@app.route("/predict", methods=["POST"])
 def predict():
 
-    data = request.get_json()
+    try:
+        data = request.get_json()
 
-    review = data['review']
+        if not data or "review" not in data:
+            return jsonify({
+                "error": "Please provide a review."
+            }), 400
 
-    cleaned_review = preprocess(review)
+        review = data["review"]
 
-    vector_input = vectorizer.transform([cleaned_review])
+        # Preprocess review
+        cleaned_review = preprocess(review)
 
-    prediction = model.predict(vector_input)[0]
+        # Convert text into vector
+        vector_input = vectorizer.transform([cleaned_review])
 
-    if prediction == 1:
+        # Predict sentiment
+        prediction = model.predict(vector_input)[0]
 
-        result = "😊 Positive Sentiment"
+        if prediction == 1:
+            result = "😊 Positive Sentiment"
+        else:
+            result = "😔 Negative Sentiment"
 
-    else:
+        return jsonify({
+            "sentiment": result
+        })
 
-        result = "😔 Negative Sentiment"
+    except Exception as e:
 
-    return jsonify({
-        'sentiment': result
-    })
+        return jsonify({
+            "error": str(e)
+        }), 500
 
-if __name__ == '__main__':
 
+# ---------------------------------------------------
+# Run Application
+# ---------------------------------------------------
+
+if __name__ == "__main__":
     app.run(debug=True)
